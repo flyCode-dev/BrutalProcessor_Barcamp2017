@@ -1,4 +1,7 @@
 package com.flycode;
 
-public class BrutalPreferences {
+public @interface BrutalPreferences {
+
+    String value();
+
 }
