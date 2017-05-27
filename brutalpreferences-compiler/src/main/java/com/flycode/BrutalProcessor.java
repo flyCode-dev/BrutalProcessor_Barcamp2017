@@ -28,6 +28,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 
 @AutoService(Processor.class)
 public class BrutalProcessor extends AbstractProcessor {
@@ -105,6 +106,11 @@ public class BrutalProcessor extends AbstractProcessor {
         for (Element element : elementList) {
             // Check that element is really a class
             if (element.getKind() != ElementKind.CLASS) {
+                messager.printMessage(
+                        Diagnostic.Kind.ERROR,
+                        "The Preferences are generated only over class",
+                        element
+                );
                 return true;
             }
 
@@ -150,11 +156,21 @@ public class BrutalProcessor extends AbstractProcessor {
 
                 // Annotated sub element must be a field
                 if (subElement.getKind() != ElementKind.FIELD) {
+                    messager.printMessage(
+                            Diagnostic.Kind.ERROR,
+                            "The Preferences are generated only over fields",
+                            element
+                    );
                     return true;
                 }
 
                 // Annotated sub element must be of supported type
                 if (!isSupported(subElement.asType())) {
+                    messager.printMessage(
+                            Diagnostic.Kind.ERROR,
+                            "This type is not supported by Shared Preferences",
+                            element
+                    );
                     return true;
                 }
 
